@@ -1,0 +1,70 @@
+\documentclass[12pt, a4paper]{article}
+
+% --- Paquetes de Idioma y Formato ---
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% --- Configuración de Párrafos ---
+\setlength{\parskip}{1em}
+\setlength{\parindent}{0pt}
+
+% --- Inicio del Documento ---
+\begin{document}
+\begin{titlepage}
+    \centering
+    \vspace*{2cm}
+    
+    % Título Principal
+    {\Huge \textbf{Hito 1: Sistemas Avanzados de Integración de la Información}\par}
+    
+    \vspace{1cm} % Aumentamos el espacio
+    
+    % Subtítulo más grande (LARGE) y con itálica para dar estilo
+    {\LARGE \textit{Sistema de integración de datos climáticos históricos y actuales en España}\par}
+    
+    \vfill    
+    \vfill
+    
+    % Bloque del Grupo (con letras más grandes)
+    {\Large \textbf{Grupo 5}} \\
+    \vspace{0.2cm}
+    \rule{0.3\linewidth}{0.5pt} % Una línea sutil para destacar el grupo
+    \vspace{0.5cm}
+    
+    \textbf{Autores:}\\
+    {\large
+    Julio Herrera Ruiz \\
+    Irene Retortillo González \\
+    Tomás Ruiz Rojo \\
+    }
+    
+    \vspace{1cm}
+    
+    \textbf{Fecha:}\\
+    {\large \today}
+    
+    \vfill
+\end{titlepage}
+% --- Índice ---
+\tableofcontents
+\newpage
+
+\section{Tema y Supuesto elegido: Información sobre el clima}
+El supuesto elegido fue el de información sobre el clima, teniendo como tema principal la integración de datos climáticos históricos y actuales en España.
+El objetivo de este proyecto es proporcionar información climática, tanto histórica como actual, para España con el objetivo de que se pueda contrastar junto con condiciones geográficas y demográficas,
+proporcionando herramientas útiles para la población en general para que puedan tomar decisiones informadas sobre sus actividades diarias, viajes, etc.
+
+Las consultas que hemos elegido realizar para este supuesto son:
+\begin{itemize}
+    \item Datos de radiación ultravioleta y calidad del aire en provincias de Cataluña.
+    \item Datos de temperatura histórica media en marzo en estaciones de la provincia de Asturias en comparación con la predicción para el día siguiente y en relación con la altura del municipio en que se encuentra la estación.
+    \item Última predicción de temperatura de la AEMET y de eltiempo.es para municipios de más de 5.000 habitantes en la provincia de Valladolid.
+\end{itemize}
+
+
+
+\end{document}
