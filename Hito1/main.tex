@@ -164,7 +164,7 @@ La estructura de las tablas es la siguiente:
 \item Tabla Datos\_Historicos:
 
 \begin{center}
-\begin{tabular}{|p{0.20\textwidth}|p{0.20\textwidth}|p{0.50\textwidth}|}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
     \hline
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
@@ -174,7 +174,7 @@ La estructura de las tablas es la siguiente:
     temperatura\_ maxima & INT & Temperatura máxima histórica registrada. \\
     altura & INT & Altitud del municipio en metros sobre el nivel del mar. \\
     provincia & VARCHAR(50) & Nombre de la provincia a la que pertenece el municipio. \\
-    fecha & DATE & Fecha específica a la que se refieren los datos históricos. \\
+    \textbf{fecha} & DATE & Fecha específica a la que se refieren los datos históricos. \\
     \hline
 \end{tabular}
 \end{center}
@@ -195,7 +195,114 @@ La estructura de las tablas es la siguiente:
 \end{itemize}
 
 
+\subsection{Captura de una instancia}
+A continuación, se muestra una “captura” de una
+instancia donde se han insertado dos elementos de ejemplo en cada tabla. Estos ejemplos de han creado a partir de datos reales que hemos encontrado al buscar, analizar y seleccionar las fuentes de datos.
+Por lo tanto, son ejemplos que podrían estar en un fúturo de la práctica.
 
+\begin{itemize}
+
+\item Tabla Municipio:
+
+\begin{center}
+\begin{tabular}{|p{0.20\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+    \hline
+    \textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+    \hline
+    \textbf{municipio} & Araba/Álava & Teruel \\
+    codigo\_provincia & 1 & 44 \\
+    poblacion\_munipio & 10313 & 7214 \\
+    superficie & 9629.68 & 1413594.54 \\
+    altitud & 219 & 716 \\
+    \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\item Tabla Prediccion\_UV\_Ciudad:
+
+\begin{center}
+\begin{tabular}{|p{0.20\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+    \hline
+    \textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+    \hline
+    \textbf{municipio} & Albacete & Donostia-San Sebastián \\
+    id & 02003 & 20069 \\
+    uv & 5 & 4 \\
+    \hline
+\end{tabular}
+\end{center}
+
+
+\item Tabla Predicción\_Eltiempo:
+
+\begin{center}
+\begin{tabular}{|p{0.20\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+    \hline
+    \textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+    \hline
+    \textbf{municipio} & Aguilar de Campoo & Guarromán \\
+    calidad\_aire & 29 & 24 \\
+    temperatura\_ minima\_media & 1 & 4 \\
+    temperatura\_ maxima\_media & 9 & 17 \\
+    temperatura\_ media & 5 & 10 \\
+    prediccion\_ minima & 3 & 9 \\
+    prediccion\_ maxima & 16 & 22 \\
+    \hline
+\end{tabular}
+\end{center}
+
+
+\item Tabla Prediccion\_AEMET:
+
+\begin{center}
+\begin{tabular}{|p{0.20\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+    \hline
+    \textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+    \hline
+    \textbf{municipio} & Aguilar de Campoo & Guarromán \\
+    provincia & Palencia &  \\
+    temperatura\_ minima & 1 & 10 \\
+    temperatura\_ maxima & 19 & 25 \\
+    sensacion\_ termica\_maxima & 0 & 10 \\
+    sensacion\_ termica\_minima & 19 & 25 \\
+    \hline
+\end{tabular}
+\end{center}
+
+\newpage
+\item Tabla Datos\_Historicos:
+
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.325\textwidth}|p{0.325\textwidth}|}
+    \hline
+    \textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+    \hline
+    \textbf{municipio} & Aguilar de Campoo & Aguilar de Campoo \\
+    temperatura\_ media & 8.7 & 8.6 \\
+    temperatura\_ minima & 1.0 & 1.3 \\
+    temperatura\_ maxima & 16.4 & 16.0 \\
+    altura & 910 & 910 \\
+    provincia & Palencia & Palencia \\
+    \textbf{fecha} & 2026-03-03 & 026-03-04 \\
+    \hline
+\end{tabular}
+\end{center}
+
+\item Tabla Provincias: 
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.325\textwidth}|p{0.325\textwidth}|}
+    \hline
+    \textbf{Campo} & \textbf{TEjemplo 1} & \textbf{Ejemplo 2} \\
+    \hline
+    \textbf{codigo\_provincia} & 1 & 44 \\
+    nombre\_provincia & Álava & Teruel \\
+    comunidad\_autonoma & País Vasco & Aragón \\
+    \hline
+\end{tabular}
+\end{center}
+
+\end{itemize}
 
 
 \end{document}
