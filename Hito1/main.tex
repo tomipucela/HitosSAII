@@ -72,22 +72,22 @@ Con este esquema mediador pretendemos integrar los datos de las diferentes fuent
 
 La estructura de las tablas es la siguiente:
 \begin{itemize}
-    \item Municipio(\underline{nombre\_actual}, codigo\_provincia, provincia, poblacion\_munipio, superficie, altitud)
-    \item Prediccion\_UV\_Ciudad(\underline{id}, valor, uv)
+    \item Municipio(\underline{municipio}, codigo\_provincia, poblacion\_munipio, superficie, altitud)
+    \item Prediccion\_UV\_Ciudad(\underline{municipio}, id, uv)
     \item Predicción\_Eltiempo(\underline{municipio}, calidad\_aire, temperatura\_minima\_media, temperatura\_maxima\_media, temperatura\_media, prediccion\_minima, prediccion\_maxima)
     \item Prediccion\_AEMET(\underline{municipio}, provincia, temperatura\_minima, temperatura\_maxima, sensacion\_termica\_maxima, sensacion\_termica\_minima)
-    \item Datos\_Historicos(\underline{municipio, fecha}, temperatura\_media, temperatura\_minima, temperatura\_maxima, altura, provincia)
+    \item Datos\_Historicos(\underline{municipio,} \underline{fecha,} temperatura\_media, temperatura\_minima, temperatura\_maxima, altura, provincia)
     \item Provincias(\underline{codigo\_provincia}, nombre\_provincia,comunidad\_autonoma)
 \end{itemize}
 
 \subsection{Descripción de las tablas}
 \begin{itemize}
-    \item La tabla Municipio contiene información sobre los municipios de España, incluyendo su código de provincia, nombre actual, población, superficie y altitud. Su finalidad es proporcionar información geográfica y demográfica sobre los municipios para contextualizar los datos climáticos.
-    \item La tabla Prediccion\_UV\_Ciudad almacena datos sobre la radiación ultravioleta en todas las ciudades españolas, con el objetivo de proporcionar información sobre la exposición al sol.
-    \item La tabla Predicción\_Eltiempo contiene información sobre datos diarios de temperatura y predicciones para mañana para diferentes municipios, incluyendo la calidad del aire y las temperaturas mínimas, máximas y medias.
-    \item La tabla Prediccion\_AEMET contiene las predicciones de temperatura mínima, máxima y sensación térmica para diferentes municipios según la AEMET. Esta tabla se utiliza para comparar las predicciones de la AEMET con las de eltiempo.es y proporcionar una visión más completa de las condiciones climáticas futuras.
-    \item La tabla Datos\_Historicos almacena datos históricos de temperatura media, mínima y máxima, así como la altura y provincia de cada municipio en una fecha específica. Esta tabla se utiliza para comparar los datos actuales con los históricos y analizar tendencias climáticas a lo largo del tiempo.
-    \item La tabla Provincias contiene información sobre las provincias de España, incluyendo su código, nombre y comunidad autónoma a la que pertenecen. Esta tabla se utiliza para relacionar los municipios con sus respectivas provincias y comunidades autónomas, facilitando la integración de datos geográficos en el análisis climático.
+    \item La tabla \textbf{Municipio} contiene información sobre los municipios de España, incluyendo su código de provincia, nombre actual, población, superficie y altitud. Su finalidad es proporcionar información geográfica y demográfica sobre los municipios para contextualizar los datos climáticos.
+    \item La tabla \textbf{Prediccion\_UV\_Ciudad} almacena datos sobre la radiación ultravioleta en todas las ciudades españolas, con el objetivo de proporcionar información sobre la exposición al sol. Esta tabla solo guarda la radiación UV correspondiente a la fecha actual.
+    \item La tabla \textbf{Predicción\_Eltiempo} contiene información sobre datos diarios de temperatura y predicciones para mañana para diferentes municipios, incluyendo la calidad del aire y las temperaturas mínimas, máximas y medias.
+    \item La tabla \textbf{Prediccion\_AEMET} contiene las predicciones de temperatura mínima, máxima y sensación térmica para diferentes municipios según la AEMET. Esta tabla se utiliza para comparar las predicciones de la AEMET con las de eltiempo.es y proporcionar una visión más completa de las condiciones climáticas futuras.
+    \item La tabla \textbf{Datos\_Historicos} almacena datos históricos de temperatura media, mínima y máxima, así como la altura y provincia de cada municipio en una fecha específica. Esta tabla se utiliza para comparar los datos actuales con los históricos y analizar tendencias climáticas a lo largo del tiempo.
+    \item La tabla \textbf{Provincias} contiene información sobre las provincias de España, incluyendo su código, nombre y comunidad autónoma a la que pertenecen. Esta tabla se utiliza para relacionar los municipios con sus respectivas provincias y comunidades autónomas, facilitando la integración de datos geográficos en el análisis climático.
 \end{itemize}
 
 \subsection{Diccionario de datos}
@@ -101,9 +101,8 @@ La estructura de las tablas es la siguiente:
     \hline
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
-    nombre\_actual & VARCHAR(100) & Nombre actual del municipio. \\
+    \textbf{municipio} & VARCHAR(100) & Nombre actual del municipio. \\
     codigo\_provincia & VARCHAR(10) & Código de la provincia a la que pertenece el municipio. \\
-    provincia & VARCHAR(50) & Nombre de la provincia. \\
     poblacion\_munipio & INT & Población del municipio. \\
     superficie & INT & Superficie del municipio en m². \\
     altitud & INT & Altitud del municipio en metros sobre el nivel del mar. \\
@@ -111,6 +110,7 @@ La estructura de las tablas es la siguiente:
 \end{tabular}
 \end{center}
 
+\newpage
 \item Tabla Prediccion\_UV\_Ciudad:
 
 \begin{center}
@@ -118,8 +118,8 @@ La estructura de las tablas es la siguiente:
     \hline
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
+    \textbf{municipio} & VARCHAR(50) & Nombre de la ciudad. \\
     id & INT & Identificador único para cada municipio. \\
-    valor & VARCHAR(50) & Nombre de la ciudad. \\
     uv & INT & Valor de la radiación ultravioleta (UV) para la ciudad. \\
     \hline
 \end{tabular}
@@ -132,7 +132,7 @@ La estructura de las tablas es la siguiente:
     \hline
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
-    municipio & VARCHAR(100) & Nombre del municipio al que se refieren los datos. \\
+    \textbf{municipio} & VARCHAR(100) & Nombre del municipio al que se refieren los datos. \\
     calidad\_aire & INT & Descripción de la calidad del aire (e.g., Buena, Regular, Mala). \\
     temperatura\_ minima\_media & INT & Temperatura mínima media registrada. \\
     temperatura\_ maxima\_media & INT & Temperatura máxima media registrada. \\
@@ -150,7 +150,7 @@ La estructura de las tablas es la siguiente:
     \hline
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
-    municipio & VARCHAR(100) & Nombre del municipio al que se refieren las predicciones de la AEMET. \\
+    \textbf{municipio} & VARCHAR(100) & Nombre del municipio al que se refieren las predicciones de la AEMET. \\
     provincia & VARCHAR(50) & Nombre de la provincia a la que pertenece el municipio. \\
     temperatura\_ minima & INT & Predicción de temperatura mínima para mañana según la AEMET. \\
     temperatura\_ maxima & INT & Predicción de temperatura máxima para mañana según la AEMET. \\
@@ -168,7 +168,7 @@ La estructura de las tablas es la siguiente:
     \hline
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
-    municipio & VARCHAR(100) & Nombre del municipio al que se refieren los datos históricos. \\
+    \textbf{municipio} & VARCHAR(100) & Nombre del municipio al que se refieren los datos históricos. \\
     temperatura\_ media & INT & Temperatura media histórica registrada. \\
     temperatura\_ minima & INT & Temperatura mínima histórica registrada. \\
     temperatura\_ maxima & INT & Temperatura máxima histórica registrada. \\
@@ -181,11 +181,11 @@ La estructura de las tablas es la siguiente:
 
 \item Tabla Provincias: 
 \begin{center}
-\begin{tabular}{|p{0.20\textwidth}|p{0.20\textwidth}|p{0.50\textwidth}|}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
     \hline
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
-    codigo\_provincia & INT & Código único de la provincia. \\
+    \textbf{codigo\_provincia} & INT & Código único de la provincia. \\
     nombre\_provincia & VARCHAR(50) & Nombre de la provincia. \\
     comunidad\_autonoma & VARCHAR(50) & Nombre de la comunidad autónoma a la que pertenece la provincia. \\
     \hline
