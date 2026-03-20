@@ -8,7 +8,35 @@
 \usepackage{enumitem}
 \usepackage{hyperref}
 \usepackage{xcolor}
+\usepackage{listings}
+\usepackage{xcolor}
 
+% Configuración opcional para resaltar el código SQL
+\lstset{
+    language=SQL,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    commentstyle=\color{gray},
+    stringstyle=\color{orange},
+    breaklines=true,
+    frame=single,
+    showstringspaces=false,
+    inputencoding=utf8,
+    extendedchars=true,
+    literate=
+        {á}{{\'a}}1
+        {é}{{\'e}}1
+        {í}{{\'i}}1
+        {ó}{{\'o}}1
+        {ú}{{\'u}}1
+        {Á}{{\'A}}1
+        {É}{{\'E}}1
+        {Í}{{\'I}}1
+        {Ó}{{\'O}}1
+        {Ú}{{\'U}}1
+        {ñ}{{\~n}}1
+        {Ñ}{{\~N}}1
+}
 % --- Configuración de Párrafos ---
 \setlength{\parskip}{1em}
 \setlength{\parindent}{0pt}
@@ -200,7 +228,7 @@ Aqui va la foto del diagrama. Lo tengo que hacer jeje
 \textcolor{red}{¡¡¡¡FALTA HACER!!!!}
 
 \subsection{Captura de una instancia}
-A continuación, se muestra una “captura” de una
+A continuación, se muestra una ``captura'' de una
 instancia donde se han insertado dos elementos de ejemplo en cada tabla. Estos ejemplos de han creado a partir de datos reales que hemos encontrado al buscar, analizar y seleccionar las fuentes de datos.
 Por lo tanto, son ejemplos que podrían estar en un fúturo de la práctica.
 
@@ -288,7 +316,7 @@ Por lo tanto, son ejemplos que podrían estar en un fúturo de la práctica.
     temperatura\_ maxima & 16.4 & 16.0 \\
     altura & 910 & 910 \\
     provincia & Palencia & Palencia \\
-    \textbf{fecha} & 2026-03-03 & 026-03-04 \\
+    \textbf{fecha} & 2026-03-03 & 2026-03-04 \\
     \hline
 \end{tabular}
 \end{center}
@@ -307,6 +335,61 @@ Por lo tanto, son ejemplos que podrían estar en un fúturo de la práctica.
 \end{center}
 
 \end{itemize}
+
+\section{Formulación de las consultas en SQL}
+
+La formulación de las consultas planteadas en la sección 1 en SQL son las siguientes:
+
+\begin{lstlisting}[caption={Datos de radiacion UV y calidad del aire en Cataluna}]
+-- Datos de radiacion ultravioleta y calidad del aire en provincias de Cataluna
+SELECT 
+    m.nombre_actual AS Municipio, 
+    p.nombre_provincia AS Provincia, 
+    uv.uv AS Radiacion_UV, 
+    et.calidad_aire AS Calidad_Aire
+FROM Municipio m
+JOIN Provincias p ON m.codigo_provincia = p.codigo_provincia
+JOIN Prediccion_UV_Ciudad uv ON m.nombre_actual = uv.municipio
+JOIN Prediccion_Eltiempo et ON m.nombre_actual = et.municipio
+WHERE p.comunidad_autonoma = 'Cataluña/Catalunya';
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Comparativa historica Aguilar de Campoo}]
+-- Datos historicos de marzo del año pasado en la estacion de Aguilar de Campoo (Palencia)
+-- de la AEMET en comparacion con los datos historicos de eltiempo.es y su altura
+-- segun AEMET y datos.gob.es
+SELECT 
+    h.municipio, 
+    h.fecha,
+    h.temperatura_media AS Temp_Media_Eltiempo_Hist,
+    a.temperatura_minima AS Temp_Min_AEMET,
+    a.temperatura_maxima AS Temp_Max_AEMET,
+    h.altura AS Altura_AEMET_Historica,
+    m.altitud AS Altura_Datos_Gob
+FROM Datos_Historicos h
+JOIN Municipio m ON h.municipio = m.nombre_actual
+JOIN Prediccion_AEMET a ON h.municipio = a.municipio
+WHERE h.municipio = 'Aguilar de Campoo' 
+  AND h.fecha BETWEEN '2025-03-01' AND '2025-03-31';
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Predicciones en Valladolid para municipios > 5000 hab.}]
+-- Ultima prediccion de temperatura de la AEMET y de eltiempo.es para municipios
+-- de mas de 5000 habitantes en la provincia de Valladolid
+SELECT 
+    m.nombre_actual AS Municipio,
+    m.poblacion_munipio AS Poblacion,
+    a.temperatura_minima AS Min_AEMET,
+    a.temperatura_maxima AS Max_AEMET,
+    et.prediccion_minima AS Min_Eltiempo,
+    et.prediccion_maxima AS Max_Eltiempo
+FROM Municipio m
+JOIN Prediccion_AEMET a ON m.nombre_actual = a.municipio
+JOIN Prediccion_Eltiempo et ON m.nombre_actual = et.municipio
+WHERE m.provincia = 'Valladolid' 
+  AND m.poblacion_munipio > 5000;
+\end{lstlisting}
+
 
 
 \end{document}

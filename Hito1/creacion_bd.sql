@@ -10,8 +10,8 @@ CREATE TABLE Municipio (
 
 -- 2. Tabla Prediccion_UV_Ciudad
 CREATE TABLE Prediccion_UV_Ciudad (
-    id INT PRIMARY KEY,
-    valor VARCHAR(50),
+    municipio VARCHAR(50) PRIMARY KEY,
+    id INT,
     uv INT,
 );
 
