@@ -24,6 +24,7 @@
     showstringspaces=false,
     inputencoding=utf8,
     extendedchars=true,
+    escapechar=!,
     literate=
         {á}{{\'a}}1
         {é}{{\'e}}1
@@ -750,5 +751,145 @@ Pred\_Max & 19 & 17 \\
 \hline
 \end{tabular}
 \end{center}
+
+\section{Descripciones de las fuentes de datos}
+
+A continuación se utilizará la notación M para el medidador (Municipio, Prediccion\_UV\_Ciudad, Predicción\_Eltiempo, Prediccion\_AEMET, Datos\_Historicos, Provincias), S1 para Provincia, S2 para Municipio, S3 para Prediccion\_UVI, S4 para Prediccion\_Municipio, S5 para Climatologia\_Diaria y S6 para Prediccion\_Eltiempo.
+
+\subsection{Mapping GAV de las fuentes de datos}
+
+Partiendo de la descripción del esquema mediador y las fuentes de datos, en adelante 
+se desarrolla de manera detallada los mapping GAV (\textit{Global as View}) de cada 
+una de las tablas del mediador. Se mostrará como se mapea la información de las fuentes 
+seleccionadas a la vista global previamente diseñada.
+En los siguientes puntos se explican cada uno de los mapping GAV propuestos:
+
+\subsubsection{Tabla Municipio}
+
+El esquema mediador define la tabla Municipio como:\\
+\textbf{Municipio(\underline{municipio}, codigo\_provincia, poblacion\_munipio, superficie, altitud)}
+
+Aunque el atributo Municipio.municipio podemos extraerlo, entre otras, de las fuentes Prediccion\_Municipio.municipio, Climatologia\_Diaria.municipio solo se mirará en Municipio pues sabemos que toda la información que nos puedan proporcionar el resto de fuentes de datos ya lo proporciona\footnote{Si a posteriori se considerará necesario tener en cuenta otras fuentes de datos por si Municipios datos.gob.es no estuviera operativa se deberáin añadir nuevas reformulaciones en este mapping} la tabla Municipio de datos.gob.es Esto nos sucede también con el resto de atributos (por ejemplo para altitudd se puede extraer de Municipio.Altitud o Climatologia.Altiitud). Entonces la descripción final nos queda como sigue
+
+\begin{lstlisting}
+    M.Municipio(municipio, codigo_provincia, poblacion_munipio, superficie, altitud) !$\supseteq$!
+S2.Municipio(_, _, _, codigo_provincia, _, municipio, poblacion_municipio, superficie, _, _, _, _, _, _, _, altitud)
+\end{lstlisting}
+Se ignoran los atributos de la fuente de datos que no son relevantes y se renombran las variables para evitar conflictos.
+
+\subsubsection{Tabla Prediccion\_UV\_Ciudad}
+
+El esquema mediador defina la tabla Prediccion\_UV\_Ciudad como:\\
+\textbf{Prediccion\_UV\_Ciudad(\underline{municipio}, id, uv)}
+
+Podemos extraer toda la información de radiación ultravioleta de Prediccion\_UVI (también de Prediccion\_Municipio pero sería redundante), por ello planteamos el mapping GAV directamente como
+\begin{lstlisting}
+    M.Prediccion_UV_Ciudad(municipio, id, uv) !$\supseteq$!
+S3.Prediccion_UVI(_, id, _, F_, municipio, uv, _)
+\end{lstlisting}
+
+\subsubsection{Tabla Prediccion\_Eltiempo}
+
+El esquema mediador define la tabla Prediccion\_Eltiempo como:\\
+\textbf{Predicción\_Eltiempo(\underline{municipio}, calidad\_aire, temperatura\_minima\_media, temperatura\_maxima\_media, temperatura\_media, prediccion\_minima, prediccion\_maxima)}
+
+Nos encontramos con que la fuente Prediccion\_Eltiempo nos aporta directamente toda la información pues su tabla tiene el mismo conjunto de atributos. El mapping GAV resulta 1 a 1:
+\begin{lstlisting}
+    M.Predicción_Eltiempo(municipio, calidad_aire, temperatura_minima_media, temperatura_maxima_media, temperatura_media, prediccion_minima, prediccion_maxima) !$\supseteq$!
+S6.Prediccion_Eltiempo(municipio, calidad_aire, temperatura_minima_media, temperatura_maxima_media, temperatura_media, prediccion_minima, prediccion_maxima)
+\end{lstlisting}
+
+\subsubsection{Tabla Prediccion\_AEMET}
+
+El esquema mediador define la tabla Prediccion\_AEMET como:\\
+\textbf{Prediccion\_AEMET(\underline{municipio}, provincia, temperatura\_minima, temperatura\_maxima, sensacion\_termica\_maxima, sensacion\_termica\_minima)}
+
+El unico mapping sin redundancia que encontramos es con la fuente Prediccion\_Municipio:
+\begin{lstlisting}
+    M.Prediccion_AEMET(municipio, provincia, temperatura_minima, temperatura_maxima, sensacion_termica_maxima, sensacion_termica_minima) !$\supseteq$!
+S4.Prediccion_Municipio(_, _, _, _, municipio, provincia, _, _, _, _, _, temperatura_maxima, temperatura_minima, sensacion_termica_maxima, sensacion_termica_minima, _, _, _, _)
+\end{lstlisting}
+
+\subsubsection{Tabla Datos\_Historicos}
+
+El esquema mediador define la tabla Datos\_Historicos como:\\
+\textbf{Datos\_Historicos(\underline{municipio,} \underline{fecha,} temperatura\_media, temperatura\_minima, temperatura\_maxima, altura, provincia)}
+
+Tras repasar cada una de las fuentes de datos llegamos a que la tabla Climatologia\_Diaria contiene toda la información, y otras opciones que se puedan plantear acaban por ser redundantes:
+\begin{lstlisting}
+    M.Datos_Historicos(municipio, fecha, temperatura_media, temperatura_minima, temperatura_maxima, altura, provincia) !$\supseteq$!
+S5.Climatologia_Diaria(fecha, _, municipio, provincia, altura, temperatura_media, _, temperatura_minima, _, temperatura_maxima, _, _, _, _, _, _, _, _, _, _)
+\end{lstlisting}
+
+\subsubsection{Tabla Provincias}
+
+El esquema mediador define la tabla Provincias como:\\
+\textbf{Provincias(\underline{codigo\_provincia}, nombre\_provincia,comunidad\_autonoma)}
+
+Tenemos correspondencia casi directa con la fuente de datos Provincia (datos.gob.es) por lo que planteamos el siguiente mapping GAV
+\begin{lstlisting}
+    M.Provincias(codigo_provincia, nombre_provincia, comunidad_autonoma) !$\supseteq$!
+S1.Provincia(codigo_provincia, nombre_provincia, _, comunidad_autonoma, _)
+\end{lstlisting}
+
+\subsection{Mapping LAV de las fuentes de datos}
+
+\subsubsection{Tabla Provincia}
+
+La fuente de datos tiene la siguiente estructura:
+\textbf{Provincia(\underline{Cod\_Prov}, Provincia, Cod\_CA, Comunidad\_Autonoma, Capital)}
+
+\begin{lstlisting}
+    Provincia(Cod_Prov, Provincia, Cod_CA, Comunidad_Autonoma, Capital) !$\subseteq$!
+\end{lstlisting}
+
+\subsubsection{Tabla Municipio}
+
+La fuente de datos tiene la siguiente estructura:
+\textbf{Municipio(\underline{Cod\_INE, Id\_Rel, Cod\_Geo}, Cod\_Prov, Provincia, Nombre\_Actual, Poblacion, Superficie, Perimetro, Cod\_INE\_Capital, Capital, Poblacion\_Capital, Hoja\_MTN, Longitud, Latitud, Altitud)}
+
+\begin{lstlisting}
+    Municipio(Cod_INE, Id_Rel, Cod_Geo, Cod_Prov, Provincia, Nombre_Actual, Poblacion, Superficie, Perimetro, Cod_INE_Capital, Capital, Poblacion_Capital, Hoja_MTN, Longitud, Latitud, Altitud) !$\subseteq$!
+\end{lstlisting}
+
+\subsubsection{Tabla Prediccion\_UVI}
+
+La fuente de datos tiene la siguiente estructura:
+\textbf{Prediccion\_UVI(\underline{Fecha\_Elaboracion, Id\_Ciudad}, Fecha\_Mod, Fecha\_Validez, Ciudad, UVI, Canarias)}
+
+\begin{lstlisting}
+    Prediccion_UVI(Fecha_Elaboracion, Id_Ciudad, Fecha_Mod, Fecha_Validez, Ciudad, UVI, Canarias) !$\subseteq$!
+\end{lstlisting}
+
+\subsubsection{Prediccion\_Municipio}
+
+La fuente de datos tiene la siguiente estructura:
+\textbf{Prediccion\_Municipio(\underline{Id, Fecha\_Elaborado, Fecha, Periodo}, Municipio, Provincia, Prob\_Precipitacion, Estado\_Cielo, Viento\_Dir, Viento\_Vel, Racha\_Max, Temp\_Max, Temp\_Min, SensTerm\_Max, SensTerm\_Min, Humedad\_Max, Humedad\_Min, UVI, Cota\_Nieve)}
+
+\begin{lstlisting}
+    Prediccion_Municipio(Id, Fecha_Elaborado, Fecha, Periodo, Municipio, Provincia, Prob_Precipitacion, Estado_Cielo, Viento_Dir, Viento_Vel, Racha_Max, Temp_Max, Temp_Min, SensTerm_Max, SensTerm_Min, Humedad_Max, Humedad_Min, UVI, Cota_Nieve) !$\subseteq$!
+\end{lstlisting}
+
+\subsubsection{Climatologia\_Diaria}
+
+La fuente de datos tiene la siguiente estructura:
+\textbf{Climatologia\_Diaria(\underline{Fecha, Indicativo}, Nombre, Provincia, Altitud, Temp\_Media, Precipitacion, Temp\_Min, Hora\_Temp\_Min, Temp\_Max, Hora\_Temp\_Max, Dir\_Viento, Vel\_Media, Racha\_Max, Hora\_Racha, HR\_Media, HR\_Max, Hora\_HR\_Max, HR\_Min, Hora\_HR\_Min)}
+
+
+\begin{lstlisting}
+    Climatologia_Diaria(Fecha, Indicativo, Nombre, Provincia, Altitud, Temp_Media, Precipitacion, Temp_Min, Hora_Temp_Min, Temp_Max, Hora_Temp_Max, Dir_Viento, Vel_Media, Racha_Max, Hora_Racha, HR_Media, HR_Max, Hora_HR_Max, HR_Min, Hora_HR_Min) !$\subseteq$!
+\end{lstlisting}
+
+\subsubsection{Prediccion\_Eltiempo}
+
+La fuente de datos tiene la siguiente estructura:
+\textbf{Prediccion\_Eltiempo(\underline{Municipio}, Calidad\_Aire, Temp\_Min\_Media, Temp\_Max\_Media, Temp\_Media, Pred\_Min, Pred\_Max)}
+
+\begin{lstlisting}
+    Prediccion_Eltiempo(Municipio, Calidad_Aire, Temp_Min_Media, Temp_Max_Media, Temp_Media, Pred_Min, Pred_Max) !$\subseteq$!
+M.Predicción_Eltiempo(Municipio, Calidad_Aire, Temp_Min_Media, Temp_Max_Media, Temp_Media, Pred_Min, Pred_Max)
+\end{lstlisting}
+
+\section{Reformulacion de las consultas}
 
 \end{document}
