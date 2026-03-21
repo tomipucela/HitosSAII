@@ -163,7 +163,7 @@ La estructura de las tablas es la siguiente:
     \textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
     \hline
     \textbf{municipio} & VARCHAR(100) & Nombre del municipio al que se refieren los datos. \\
-    calidad\_aire & INT & Descripción de la calidad del aire (e.g., Buena, Regular, Mala). \\
+    calidad\_aire & INT & Numero entre 0 y 100 que indica la calidad del aire, siendo 0 la mejor calidad y 100 la peor. \\
     temperatura\_ minima\_media & INT & Temperatura mínima media registrada. \\
     temperatura\_ maxima\_media & INT & Temperatura máxima media registrada. \\
     temperatura\_ media & INT & Temperatura media registrada. \\
@@ -397,7 +397,358 @@ JOIN Prediccion_Eltiempo et ON m.nombre_actual = et.municipio
 WHERE m.provincia = 'Valladolid' 
   AND m.poblacion_munipio > 5000;
 \end{lstlisting}
+\section{Abstracciones de las fuentes de datos}
+Para la integración de datos climáticos históricos y actuales en España, se han utilizado las siguientes fuentes de datos:
 
+\subsection{SPARQL: Nomenclátor Geográfico de Municipios y Entidades de Población}
+Esta fuente proviene de datos.gob.es y proporciona 2 tablas: Provincias y Municipios. 
+Se puede acceder a la base de datos en \href{https://datos.gob.es/es/catalogo/e00125901-spaignnomenclatorgeograficomunicipiosentpob201503240000}{datos.gob.es (Nomenclátor geográfico de municipios y entidades de población)}.
 
+\subsubsection{Provincias}
+\subsubsection*{Descripción}
+La tabla Provincias contiene información sobre las provincias de España,
+incluyendo su código de provincia y de comunidad autónoma, nombre de provincia y comunidad autónoma a la que pertenecen y nombre del municipio que ejerce como capital de la provincia.
+Esta tabla se utiliza para relacionar los municipios con sus respectivas provincias y comunidades autónomas, facilitando la integración de datos geográficos en el análisis climático.
+
+La estructura de la tabla Provincias es la siguiente:
+
+Provincia(\underline{Cod\_Prov}, Provincia, Cod\_CA, Comunidad\_Autonoma, Capital)
+
+\subsubsection*{Diccionario de datos}
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
+\hline
+\textbf{Cod\_Prov} & INT & Código único de la provincia. \\
+Provincia & VARCHAR(50) & Nombre de la provincia. \\
+Cod\_CA & INT & Código de la comunidad autónoma a la que pertenece la provincia. \\
+Comunidad\_Autonoma & VARCHAR(50) & Nombre de la comunidad autónoma a la que pertenece la provincia. \\
+Capital & VARCHAR(50) & Nombre de la capital de la provincia. \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Captura de una instancia}
+\begin{center}
+\begin{tabular}{|p{0.30\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+\hline
+\textbf{Cod\_Prov} & 01 & 02 \\
+\textbf{Provincia} & Araba/Álava & Albacete \\
+\textbf{Cod\_CA} & 16 & 08 \\
+\textbf{Comunidad\_Autonoma} & País Vasco/Euskadi & Castilla-La Mancha \\
+\textbf{Capital} & Vitoria-Gasteiz & Albacete \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Municipios}
+\subsubsection*{Descripción}
+La tabla Municipios contiene información detallada sobre las entidades locales de España. 
+Incluye identificadores geográficos y estadísticos (INE), la vinculación con su provincia, datos demográficos como la población total, y métricas físicas como la superficie, altitud y coordenadas geográficas. 
+Esta tabla es fundamental para localizar estaciones climáticas y agregar datos a nivel municipal.
+
+La estructura de la tabla Municipios es la siguiente:
+
+Municipio(\underline{Cod\_INE, Id\_Rel, Cod\_Geo}, Cod\_Prov, Provincia, Nombre\_Actual, Poblacion, Superficie, Perimetro, Cod\_INE\_Capital, Capital, Poblacion\_Capital, Hoja\_MTN, Longitud, Latitud, Altitud)
+
+\subsubsection*{Diccionario de datos}
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
+\hline
+\textbf{Cod\_INE} & VARCHAR(20) & Código INE completo del municipio. \\
+\textbf{Id\_Rel} & INT & Identificador de relación. \\
+\textbf{Cod\_Geo} & VARCHAR(10) & Código geográfico. \\
+Cod\_Prov & INT & Código de la provincia a la que pertenece. \\
+Provincia & VARCHAR(50) & Nombre de la provincia. \\
+Nombre\_Actual & VARCHAR(100) & Nombre oficial del municipio. \\
+Poblacion & INT & Número total de habitantes del municipio. \\
+Superficie & DECIMAL & Superficie del término municipal en hectáreas. \\
+Perimetro & DECIMAL & Perímetro del término municipal. \\
+Cod\_INE\_Capital & VARCHAR(20) & Código INE del núcleo donde radica la capitalidad. \\
+Capital & VARCHAR(100) & Nombre del núcleo de población capital. \\
+Poblacion\_Capital & INT & Habitantes del núcleo capital. \\
+Hoja\_MTN & VARCHAR(20) & Referencia a la hoja del Mapa Topográfico Nacional. \\
+Longitud & DECIMAL & Coordenada de longitud (ETRS89). \\
+Latitud & DECIMAL & Coordenada de latitud (ETRS89). \\
+Altitud & INT & Altitud media del municipio en metros. \\
+\hline
+\end{tabular}
+\end{center}
+
+\newpage
+
+\subsubsection*{Captura de una instancia}
+\begin{center}
+\begin{tabular}{|p{0.30\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+\hline
+\textbf{Cod\_INE} & 01001000000 & 01002000000 \\
+\textbf{Id\_Rel} & 1010014 & 1010029 \\
+\textbf{Cod\_Geo} & 01010 & 01020 \\
+\textbf{Cod\_Prov} & 01 & 01 \\
+\textbf{Provincia} & Araba/Álava & Araba/Álava \\
+\textbf{Nombre\_Actual} & Alegría-Dulantzi & Amurrio \\
+\textbf{Poblacion} & 2975 & 10313 \\
+\textbf{Superficie} & 1994.5872 & 9629.68 \\
+\textbf{Perimetro} & 35069 & 65381 \\
+\textbf{Cod\_INE\_Capital} & 01001000101 & 01002000201 \\
+\textbf{Capital} & Alegría-Dulantzi & Amurrio \\
+\textbf{Poblacion\_Capital} & 2860 & 9238 \\
+\textbf{Hoja\_MTN} & 0113-3 & 0086-4 \\
+\textbf{Longitud} & -2.51243731 & -3.00007326 \\
+\textbf{Latitud} & 42.83981158 & 43.05427776 \\
+\textbf{Altitud} & 568 & 219 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{API: AEMET}
+Los datos que hemos elegido para utilizar una API son los de la AEMET, ya que es la fuente oficial de datos climáticos en España y proporciona información detallada sobre las condiciones climáticas actuales e históricas y predicciones futuras.
+Se puede solicitar la API y acceder a los datos en \href{https://opendata.aemet.es/centrodedescargas/inicio}{AEMET (Agencia Estatal de Meteorología)}.
+
+\subsubsection{Predicción de radiación ultravioleta (UVI). Último elaborado. D+0}
+
+\subsubsection*{Descripción}
+Este conjunto de datos proporciona la predicción del índice de radiación ultravioleta (UVI) para distintas ciudades de España en el día actual (D+0). 
+Incluye información temporal sobre la elaboración, modificación y validez de la predicción, así como los valores del índice UV previstos para cada ciudad.
+
+El índice UV es una medida de la intensidad de la radiación ultravioleta solar en la superficie terrestre y es útil para evaluar el riesgo de exposición al sol.
+
+\subsubsection*{Estructura}
+Prediccion\_UVI(\underline{Fecha\_Elaboracion, Id\_Ciudad}, Fecha\_Mod, Fecha\_Validez, Ciudad, UVI, Canarias)
+
+\subsubsection*{Diccionario de datos}
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
+\hline
+\textbf{Fecha\_Elaboracion} & DATETIME & Fecha y hora en la que se generó la predicción. \\
+\textbf{Id\_Ciudad} & VARCHAR(10) & Identificador único de la ciudad. \\
+Fecha\_Mod & DATETIME & Fecha y hora de la última modificación de los datos. \\
+Fecha\_Validez & DATETIME & Fecha y hora hasta la que es válida la predicción. \\
+Ciudad & VARCHAR(100) & Nombre de la ciudad. \\
+UVI & INT & Índice de radiación ultravioleta previsto. \\
+Canarias & BOOLEAN & Indicador de si la ciudad pertenece a Canarias (1) o no (0). \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Captura de una instancia}
+\begin{center}
+\begin{tabular}{|p{0.30\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+\hline
+\textbf{Fecha\_Elaboracion} & 2026-03-21 01:32:02 & 2026-03-21 01:32:02 \\
+\textbf{Id\_Ciudad} & 02003 & 03014 \\
+Fecha\_Mod & 2026-03-20 12:00:00 & 2026-03-20 12:00:00 \\
+Fecha\_Validez & 2026-03-21 12:00:00 & 2026-03-21 12:00:00 \\
+Ciudad & Albacete & Alacant/Alicante \\
+UVI & 4 & 4 \\
+Canarias & 0 & 0 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Predicción por municipios diaria. Último elaborado}
+
+\subsubsection*{Descripción}
+Este conjunto de datos proporciona la predicción meteorológica detallada a nivel municipal ofrecida por la AEMET. 
+Incluye información general sobre el origen de los datos, fechas de elaboración, así como predicciones diarias desglosadas en distintos intervalos horarios.
+
+La predicción contiene variables meteorológicas como probabilidad de precipitación, estado del cielo, viento, temperatura, humedad relativa, cota de nieve y radiación ultravioleta, permitiendo un análisis climático detallado a corto y medio plazo.
+
+\subsubsection*{Estructura}
+Prediccion\_Municipio(\underline{Id, Fecha\_Elaborado, Fecha, Periodo}, Municipio, Provincia, Prob\_Precipitacion, Estado\_Cielo, Viento\_Dir, Viento\_Vel, Racha\_Max, Temp\_Max, Temp\_Min, SensTerm\_Max, SensTerm\_Min, Humedad\_Max, Humedad\_Min, UVI, Cota\_Nieve)
+
+\subsubsection*{Diccionario de datos}
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
+\hline
+\textbf{Id} & INT & Identificador único de la predicción. \\
+\textbf{Fecha\_Elaborado} & DATETIME & Fecha y hora de elaboración de la predicción. \\
+\textbf{Fecha} & DATE & Fecha a la que corresponde la predicción. \\
+\textbf{Periodo} & VARCHAR(10) & Intervalo horario de la predicción (ej. 00-24, 12-18). \\
+Municipio & VARCHAR(100) & Nombre del municipio. \\
+Provincia & VARCHAR(100) & Provincia del municipio. \\
+Prob\_Precipitacion & INT & Probabilidad de precipitación (\%). \\
+Estado\_Cielo & VARCHAR(100) & Descripción del estado del cielo. \\
+Viento\_Dir & VARCHAR(5) & Dirección del viento. \\
+Viento\_Vel & INT & Velocidad del viento (km/h). \\
+Racha\_Max & INT & Racha máxima de viento (km/h). \\
+Temp\_Max & INT & Temperatura máxima diaria (°C). \\
+Temp\_Min & INT & Temperatura mínima diaria (°C). \\
+SensTerm\_Max & INT & Sensación térmica máxima (°C). \\
+SensTerm\_Min & INT & Sensación térmica mínima (°C). \\
+Humedad\_Max & INT & Humedad relativa máxima (\%). \\
+Humedad\_Min & INT & Humedad relativa mínima (\%). \\
+UVI & INT & Índice máximo de radiación ultravioleta. \\
+Cota\_Nieve & VARCHAR(10) & Altitud de la cota de nieve prevista (m). \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Captura de una instancia}
+\begin{center}
+\begin{tabular}{|p{0.30\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+\hline
+\textbf{Id} & -31532 & -31532 \\
+\textbf{Fecha\_Elaborado} & 2026-03-21 08:57:12 & 2026-03-21 08:57:12 \\
+\textbf{Fecha} & 2026-03-21 & 2026-03-22 \\
+\textbf{Periodo} & 12-24 & 00-24 \\
+Municipio & Aguilar de Campoo & Aguilar de Campoo \\
+Provincia & Palencia & Palencia \\
+Prob\_Precipitacion & 0 & 0 \\
+Estado\_Cielo & Nubes altas & Poco nuboso \\
+Viento\_Dir & NE & NE \\
+Viento\_Vel & 20 & 20 \\
+Racha\_Max & NULL & 40 \\
+Temp\_Max & 19 & 16 \\
+Temp\_Min & 2 & -1 \\
+SensTerm\_Max & 19 & 16 \\
+SensTerm\_Min & 0 & -1 \\
+Humedad\_Max & 100 & 100 \\
+Humedad\_Min & 45 & 35 \\
+UVI & 4 & 4 \\
+Cota\_Nieve & NULL & NULL \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection{Climatologías diarias (Datos históricos)}
+
+\subsubsection*{Descripción}
+Este conjunto de datos recoge información climatológica diaria procedente de estaciones meteorológicas de la AEMET. 
+Incluye variables atmosféricas observadas como temperaturas, precipitación, viento y humedad relativa, junto con las horas a las que se registran ciertos valores extremos.
+
+Estos datos permiten analizar el comportamiento climático histórico a nivel diario y realizar estudios de tendencias, variabilidad y comparación con predicciones meteorológicas.
+
+\subsubsection*{Estructura}
+Climatologia\_Diaria(\underline{Fecha, Indicativo}, Nombre, Provincia, Altitud, Temp\_Media, Precipitacion, Temp\_Min, Hora\_Temp\_Min, Temp\_Max, Hora\_Temp\_Max, Dir\_Viento, Vel\_Media, Racha\_Max, Hora\_Racha, HR\_Media, HR\_Max, Hora\_HR\_Max, HR\_Min, Hora\_HR\_Min)
+
+\subsubsection*{Diccionario de datos}
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
+\hline
+\textbf{Fecha} & DATE & Fecha de observación. \\
+\textbf{Indicativo} & VARCHAR(10) & Código identificador de la estación meteorológica. \\
+Nombre & VARCHAR(100) & Nombre de la estación o municipio. \\
+Provincia & VARCHAR(100) & Provincia donde se ubica la estación. \\
+Altitud & INT & Altitud de la estación (m). \\
+Temp\_Media & DECIMAL & Temperatura media diaria (°C). \\
+Precipitacion & DECIMAL & Precipitación acumulada diaria (mm). \\
+Temp\_Min & DECIMAL & Temperatura mínima registrada (°C). \\
+Hora\_Temp\_Min & TIME & Hora a la que se alcanza la temperatura mínima. \\
+Temp\_Max & DECIMAL & Temperatura máxima registrada (°C). \\
+Hora\_Temp\_Max & TIME & Hora a la que se alcanza la temperatura máxima. \\
+Dir\_Viento & INT & Dirección media del viento (grados). \\
+Vel\_Media & DECIMAL & Velocidad media del viento (m/s). \\
+Racha\_Max & DECIMAL & Racha máxima de viento (m/s). \\
+Hora\_Racha & TIME & Hora de la racha máxima. \\
+HR\_Media & INT & Humedad relativa media (\%). \\
+HR\_Max & INT & Humedad relativa máxima (\%). \\
+Hora\_HR\_Max & VARCHAR(20) & Hora de humedad máxima (puede ser múltiple). \\
+HR\_Min & INT & Humedad relativa mínima (\%). \\
+Hora\_HR\_Min & TIME & Hora de humedad mínima. \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Captura de una instancia}
+\begin{center}
+\begin{tabular}{|p{0.30\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+\hline
+\textbf{Fecha} & 2026-03-01 & 2026-03-02 \\
+\textbf{Indicativo} & 2243A & 2243A \\
+Nombre & AGUILAR DE CAMPOO & AGUILAR DE CAMPOO \\
+Provincia & PALENCIA & PALENCIA \\
+Altitud & 910 & 910 \\
+Temp\_Media & 6.1 & 9.8 \\
+Precipitacion & 0.0 & 0.0 \\
+Temp\_Min & -2.5 & 2.9 \\
+Hora\_Temp\_Min & 03:39 & 00:01 \\
+Temp\_Max & 14.7 & 16.8 \\
+Hora\_Temp\_Max & 14:43 & 16:04 \\
+Dir\_Viento & 23 & 18 \\
+Vel\_Media & 1.9 & 1.9 \\
+Racha\_Max & 8.3 & 8.3 \\
+Hora\_Racha & 13:50 & 12:40 \\
+HR\_Media & 73 & 75 \\
+HR\_Max & 99 & 96 \\
+Hora\_HR\_Max & Varias & 00:10 \\
+HR\_Min & 43 & 44 \\
+Hora\_HR\_Min & 16:10 & 15:50 \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Scraping: eltiempo.es}
+
+Esta fuente de datos se obtiene mediante técnicas de \textit{web scraping} a partir del sitio web \href{https://www.eltiempo.es}{eltiempo.es}, que ofrece información meteorológica detallada a nivel municipal.
+
+A diferencia de otras fuentes estructuradas (como APIs o endpoints SPARQL), los datos obtenidos mediante scraping no siguen un esquema fijo ni están diseñados para su explotación directa en sistemas de información. 
+Por este motivo, se realiza un proceso de selección y transformación en el que únicamente se extraen aquellos atributos considerados relevantes para el análisis climático, descartando información redundante, no estructurada o de difícil integración.
+
+En concreto, se han seleccionado variables relacionadas con temperatura y calidad del aire, ya que complementan los datos proporcionados por AEMET y permiten enriquecer el análisis con indicadores adicionales.
+
+\subsubsection{Predicción\_Eltiempo}
+\subsubsection*{Descripción}
+La tabla Predicción\_Eltiempo recoge información meteorológica básica obtenida mediante scraping para distintos municipios. 
+Incluye métricas de temperatura observada y predicha, así como un indicador de calidad del aire.
+
+Esta tabla se utiliza como fuente complementaria para contrastar predicciones y enriquecer el análisis con información procedente de fuentes no oficiales.
+
+La estructura de la tabla Predicción\_Eltiempo es la siguiente:
+
+Prediccion\_Eltiempo(\underline{Municipio}, Calidad\_Aire, Temp\_Min\_Media, Temp\_Max\_Media, Temp\_Media, Pred\_Min, Pred\_Max)
+
+\subsubsection*{Diccionario de datos}
+\begin{center}
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.45\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Tipo de Dato} & \textbf{Descripción} \\
+\hline
+\textbf{Municipio} & VARCHAR(100) & Nombre del municipio al que se refieren los datos. \\
+calidad\_aire & INT & Numero entre 0 y 100 que indica la calidad del aire, siendo 0 la mejor calidad y 100 la peor. \\
+Temp\_Min\_Media & INT & Temperatura mínima media registrada (°C). \\
+Temp\_Max\_Media & INT & Temperatura máxima media registrada (°C). \\
+Temp\_Media & INT & Temperatura media registrada (°C). \\
+Pred\_Min & INT & Predicción de temperatura mínima para el día siguiente (°C). \\
+Pred\_Max & INT & Predicción de temperatura máxima para el día siguiente (°C). \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsubsection*{Captura de una instancia}
+\begin{center}
+\begin{tabular}{|p{0.30\textwidth}|p{0.30\textwidth}|p{0.30\textwidth}|}
+\hline
+\textbf{Campo} & \textbf{Ejemplo 1} & \textbf{Ejemplo 2} \\
+\hline
+\textbf{Municipio} & Valladolid & Palencia \\
+Calidad\_Aire & 35 & 23 \\
+Temp\_Min\_Media & 3 & 2 \\
+Temp\_Max\_Media & 18 & 16 \\
+Temp\_Media & 10 & 9 \\
+Pred\_Min & 5 & 4 \\
+Pred\_Max & 19 & 17 \\
+\hline
+\end{tabular}
+\end{center}
 
 \end{document}
