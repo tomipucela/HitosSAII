@@ -699,10 +699,10 @@ Hora\_HR\_Min & 16:10 & 15:50 \\
 
 \subsection{Scraping: eltiempo.es}
 
-Esta fuente de datos se obtiene mediante técnicas de \textit{web scraping} a partir del sitio web \href{https://www.eltiempo.es}{eltiempo.es}, que ofrece información meteorológica detallada a nivel municipal.
+Esta fuente de datos se obtiene mediante técnicas de web scraping a partir del sitio web \href{https://www.eltiempo.es}{eltiempo.es}, que ofrece información meteorológica detallada a nivel municipal.
 
-A diferencia de otras fuentes estructuradas (como APIs o endpoints SPARQL), los datos obtenidos mediante scraping no siguen un esquema fijo ni están diseñados para su explotación directa en sistemas de información. 
-Por este motivo, se realiza un proceso de selección y transformación en el que únicamente se extraen aquellos atributos considerados relevantes para el análisis climático, descartando información redundante, no estructurada o de difícil integración.
+A diferencia de otras fuentes estructuradas (como APIs o SPARQL), los datos obtenidos mediante scraping no siguen un esquema fijo de origen. 
+Sin embargo, sí resultan útiles para la integración: mediante un proceso de selección, limpieza y transformación, es posible normalizar los atributos relevantes e incorporarlos al esquema mediador de forma consistente, descartando únicamente la información redundante o no estructurada.
 
 En concreto, se han seleccionado variables relacionadas con temperatura y calidad del aire, ya que complementan los datos proporcionados por AEMET y permiten enriquecer el análisis con indicadores adicionales.
 
