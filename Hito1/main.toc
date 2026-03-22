@@ -1,0 +1,35 @@
+\babel@toc {spanish}{}\relax 
+\contentsline {section}{\numberline {1}Tema y Supuesto elegido: Información sobre el clima}{3}{section.1}%
+\contentsline {section}{\numberline {2}Esquema del mediador}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Especificacion}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Descripción de las tablas}{4}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Diccionario de datos}{4}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Diagrama relacional}{7}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}Captura de una instancia}{7}{subsection.2.5}%
+\contentsline {section}{\numberline {3}Formulación de las consultas en SQL}{9}{section.3}%
+\contentsline {section}{\numberline {4}Abstracciones de las fuentes de datos}{10}{section.4}%
+\contentsline {subsection}{\numberline {4.1}SPARQL: Nomenclátor Geográfico de Municipios y Entidades de Población}{11}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Provincias}{11}{subsubsection.4.1.1}%
+\contentsline {subsubsection}{\numberline {4.1.2}Municipios}{12}{subsubsection.4.1.2}%
+\contentsline {subsection}{\numberline {4.2}API: AEMET}{13}{subsection.4.2}%
+\contentsline {subsubsection}{\numberline {4.2.1}Predicción de radiación ultravioleta (UVI). Último elaborado. D+0}{13}{subsubsection.4.2.1}%
+\contentsline {subsubsection}{\numberline {4.2.2}Predicción por municipios diaria. Último elaborado}{14}{subsubsection.4.2.2}%
+\contentsline {subsubsection}{\numberline {4.2.3}Climatologías diarias (Datos históricos)}{16}{subsubsection.4.2.3}%
+\contentsline {subsection}{\numberline {4.3}Scraping: eltiempo.es}{17}{subsection.4.3}%
+\contentsline {subsubsection}{\numberline {4.3.1}Predicción\_Eltiempo}{18}{subsubsection.4.3.1}%
+\contentsline {section}{\numberline {5}Descripciones de las fuentes de datos}{19}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Mapping GAV de las fuentes de datos}{19}{subsection.5.1}%
+\contentsline {subsubsection}{\numberline {5.1.1}Tabla Municipio}{19}{subsubsection.5.1.1}%
+\contentsline {subsubsection}{\numberline {5.1.2}Tabla Prediccion\_UV\_Ciudad}{19}{subsubsection.5.1.2}%
+\contentsline {subsubsection}{\numberline {5.1.3}Tabla Prediccion\_Eltiempo}{20}{subsubsection.5.1.3}%
+\contentsline {subsubsection}{\numberline {5.1.4}Tabla Prediccion\_AEMET}{20}{subsubsection.5.1.4}%
+\contentsline {subsubsection}{\numberline {5.1.5}Tabla Datos\_Historicos}{20}{subsubsection.5.1.5}%
+\contentsline {subsubsection}{\numberline {5.1.6}Tabla Provincias}{21}{subsubsection.5.1.6}%
+\contentsline {subsection}{\numberline {5.2}Mapping LAV de las fuentes de datos}{21}{subsection.5.2}%
+\contentsline {subsubsection}{\numberline {5.2.1}Tabla Provincia}{21}{subsubsection.5.2.1}%
+\contentsline {subsubsection}{\numberline {5.2.2}Tabla Municipio}{21}{subsubsection.5.2.2}%
+\contentsline {subsubsection}{\numberline {5.2.3}Tabla Prediccion\_UVI}{22}{subsubsection.5.2.3}%
+\contentsline {subsubsection}{\numberline {5.2.4}Prediccion\_Municipio}{22}{subsubsection.5.2.4}%
+\contentsline {subsubsection}{\numberline {5.2.5}Climatologia\_Diaria}{22}{subsubsection.5.2.5}%
+\contentsline {subsubsection}{\numberline {5.2.6}Prediccion\_Eltiempo}{22}{subsubsection.5.2.6}%
+\contentsline {section}{\numberline {6}Reformulacion de las consultas}{23}{section.6}%
